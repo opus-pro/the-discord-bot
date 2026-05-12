@@ -1,0 +1,51 @@
+services:
+  mock-discord:
+    build: ./mock/discord
+    container_name: tdb-mock-discord
+    ports:
+      - "${MOCK_DISCORD_PORT:-7001}:7001"
+    environment:
+      BOT_WEBHOOK_URL: ${BOT_WEBHOOK_URL:-http://host.docker.internal:8080/interactions}
+    volumes:
+      - discord-data:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7001/healthz').read()"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+  mock-platform:
+    build: ./mock/platform
+    container_name: tdb-mock-platform
+    ports:
+      - "${MOCK_PLATFORM_PORT:-7002}:7002"
+    environment:
+      PLATFORM_DELAY_SECONDS: ${PLATFORM_DELAY_SECONDS:-60}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7002/healthz').read()"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+  mock-llm:
+    build: ./mock/llm
+    container_name: tdb-mock-llm
+    ports:
+      - "${MOCK_LLM_PORT:-7003}:7003"
+    environment:
+      LLM_ADVERSARIAL: ${LLM_ADVERSARIAL:-1}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7003/healthz').read()"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+volumes:
+  discord-data:

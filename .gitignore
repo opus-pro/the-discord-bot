@@ -1,0 +1,14 @@
+.env
+*.pyc
+__pycache__/
+.venv/
+.DS_Store
+mock/discord/data/
+node_modules/
+dist/
+build/
+.idea/
+.vscode/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
