@@ -10,7 +10,9 @@ endif
 MOCK_DISCORD_PORT ?= 7001
 MOCK_PLATFORM_PORT ?= 7002
 MOCK_LLM_PORT ?= 7003
-URL ?= https://www.youtube.com/watch?v=dQw4w9WgXcQ
+# Allow either `url=` or `URL=` from the command line, since make is case-sensitive.
+url ?= $(URL)
+url := $(if $(url),$(url),https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 .PHONY: help dev down restart status send logs reset rebuild ps
 
@@ -56,7 +58,7 @@ status:
 	@bash scripts/status.sh
 
 send:
-	@bash scripts/send.sh "$(URL)"
+	@bash scripts/send.sh "$(url)"
 
 logs:
 	@python3 scripts/logs.py
