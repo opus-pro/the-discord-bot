@@ -33,10 +33,12 @@ fi
 
 if curl -fsS --max-time 2 "http://localhost:${DISCORD_PORT}/v1/interactions?limit=5" >/dev/null 2>&1; then
   echo "Last 5 interactions:"
-  curl -fsS "http://localhost:${DISCORD_PORT}/v1/interactions?limit=5" | python3 -c '
-import json, sys
-data = json.load(sys.stdin)
+  DISCORD_PORT="${DISCORD_PORT}" python3 - <<'PYEOF'
+import json, os, urllib.request
+url = f"http://localhost:{os.environ['DISCORD_PORT']}/v1/interactions?limit=5"
+with urllib.request.urlopen(url, timeout=2) as r:
+    data = json.loads(r.read())
 for i in data["interactions"]:
-    print(f"  {i[\"id\"][:8]}  /{i[\"name\"]}  status={i[\"status\"]}  ack_ms={i.get(\"ack_ms\")}")
-'
+    print(f"  {i['id'][:8]}  /{i['name']}  status={i['status']}  ack_ms={i.get('ack_ms')}")
+PYEOF
 fi

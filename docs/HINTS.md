@@ -63,6 +63,12 @@ endpoint, which is not what we're hiring for.
 `make logs` is a tail of the channel. Leave it running in a second terminal.
 For the raw event stream, `curl -s http://localhost:7001/v1/channel/messages | jq`.
 
+You can also poke each mock service interactively at its FastAPI docs page:
+
+- mock-discord  : <http://localhost:7001/docs>
+- mock-platform : <http://localhost:7002/docs>
+- mock-llm      : <http://localhost:7003/docs>
+
 ## Reset between attempts
 
 `make reset` clears the chat log and forgets all in-memory interactions
